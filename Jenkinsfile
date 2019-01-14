@@ -27,7 +27,7 @@ pipeline {
 
             }
         }
-
+/*
         stage ('Deploy to Production'){
             steps{
                 timeout (time: 5, unit:'DAYS'){
@@ -43,9 +43,9 @@ pipeline {
                 }
 
                 failure{
-                    echo 'Deployement Failure on PRODUCTION'
+                    echo 'Deployment Failure on PRODUCTION'
                 }
             }
-        }
+        }*/
     }
 }
