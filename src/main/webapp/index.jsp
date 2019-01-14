@@ -5,7 +5,7 @@
 <h3>Welcome to Jenkins! We are working on Code Pipeline version 2</h3>
 
 <p> This is change is to verify the Stage vs Production</p>
-<p>By Shobhit Dimri adadasda</p>
+<p>By Shobhit Dimri</p>
 
 </body>
 </html>
