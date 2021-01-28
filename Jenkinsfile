@@ -43,7 +43,7 @@ pipeline {
                 }
             }
         }
-
+/*
         stage ('Deploy Build in CTE Environment'){
             steps{
 
@@ -81,5 +81,6 @@ pipeline {
                 }
             }
         }
+*/        
     }
 }
