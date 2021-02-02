@@ -5,13 +5,6 @@ env.BaseEnv_ID = params.BaseEnv_ID
 
 pipeline {
     agent any
-    parameters {
-        choice(
-            name: 'pteEnv',
-            choices: 'PTE-1\nPTE-2\nPTE-3\nPTE-4',
-            description: 'Select the environment where you want to deploy the build: '
-        )
-    }
     stages {
         stage ("Updating code from SCM") {
             steps {
