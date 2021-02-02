@@ -5,29 +5,42 @@ env.BaseEnv_ID = params.BaseEnv_ID
 
 pipeline {
     agent any
+    parameters{
+
+    }
     stages {
-        stage ('Create Build') {
+        stage ("Create Build") {
             steps {
                 /*For windows machine */
                //bat  'mvn clean package'
 
                 /*For Mac & Linux machine */
-                sh  'mvn clean package'
+                echo "Creating a Build..."
+                sh  "mvn -version"
+                sh  "mvn clean install -DargLine=”noverify” -DccBaseline=PIP-DEVELOP-${BUILD_NUMBER} -P deliver"
             }
 
             post{
-                success{
-                    echo 'Now Archiving ....'
-
-                    archiveArtifacts artifacts : '**/*.war'
+                always{
+                    cleanWs()
                 }
+                success{
+                    echo "Archiving the build...."
+                    archiveArtifacts artifacts : 'Deliverabl*/target/*.zip'
+                }
+            }
+        }
+
+        stage ("Upload Build to JFrog repository"){
+            steps{
+                echo "Uploading build to JFrog repository"
             }
         }
 
         stage ('Deploy Build in PTE Environment'){
             steps{
                     timeout (time: 5, unit:'DAYS'){
-                    input message: 'Approve PRODUCTION Deployment?'
+                    input message: 'Approve PTE Deployment?'
                 }
                 // build job : 'Deploy_Servlet_Staging_Env'
                 build job : 'Deploy_PTE_env_Pipeline'
@@ -35,11 +48,11 @@ pipeline {
             }
             post{
                 success{
-                    echo 'Deployment on PRODUCTION is Successful'
+                    echo 'Deployment on PTE is Successful'
                 }
 
                 failure{
-                    echo 'Deployment Failure on PRODUCTION'
+                    echo 'Deployment Failure on PTE'
                 }
             }
         }
