@@ -1,50 +1,52 @@
+env.Version_ID = params.Version_ID
+env.Build_ID = params.Build_ID
+env.Client = params.Client
+env.BaseEnv_ID = params.BaseEnv_ID
+
 pipeline {
     agent any
+    parameters {
+        choice(
+            name: 'pteEnv',
+            choices: 'PTE-1\nPTE-2\nPTE-3\nPTE-4',
+            description: 'Select the environment where you want to deploy the build: '
+        )
+    }
     stages {
-        stage ('Build Servlet Project') {
+        stage ("Updating code from SCM") {
             steps {
-                /*For windows machine */
-               //bat  'mvn clean package'
-
-                /*For Mac & Linux machine */
-                sh  'mvn clean package'
-            }
-
-            post{
-                success{
-                    echo 'Now Archiving ....'
-
-                    archiveArtifacts artifacts : '**/*.war'
-                }
+                git credentialsId: 'git_credentials', url: "https://github.com/Shobhit-Dimri/java-tomcat-maven-example.git"
             }
         }
-
-        stage ('Deploy Build in Staging Area'){
-            steps{
-
-                // build job : 'Deploy_Servlet_Staging_Env'
-                build job : 'Deploy_Staging_Area_Pipeline'
-
+        stage ("Creating Build") {
+            steps {
+                echo "Creating a Build..."
+                sh  "mvn -version"
+                sh  "mvn clean install -DargLine=”noverify” -DccBaseline=PIP-DEVELOP-${BUILD_NUMBER} -P deliver"
+                echo "BUILD# ${BUILD_NUMBER}"
+            }
+            post{
+                always{
+                    cleanWs()
+                }
+            /*    success{
+                    echo "Archiving the build...."
+                    archiveArtifacts artifacts : "build/target/*war"
+                }*/
             }
         }
-
-        stage ('Deploy to Production'){
-            steps{
-                timeout (time: 5, unit:'DAYS'){
-                    input message: 'Approve PRODUCTION Deployment?'
-                }
-                
-                build job : 'Deploy_Production_Pipeline'
+        stage ("Upload build to Artifactory") {
+            steps {
+                echo "Upload artifactory to JFrog."
             }
-
-            post{
-                success{
-                    echo 'Deployment on PRODUCTION is Successful'
+        }
+        stage('Select PTE environment') {
+            steps {
+                script {
+                    env.pteEnv = input message: 'Select PTE env in which you want to deploy the build', ok: 'Deploy!',
+                            parameters: [choice(name: 'DEPLOY BUILD', choices: 'All\nPTE-1\nPTE-2\nPTE-3\nPTE-4', description: "Which PTE environment?")]
                 }
-
-                failure{
-                    echo 'Deployment Failure on PRODUCTION'
-                }
+                echo "PTE environment selected ${env.pteEnv}"
             }
         }
     }
