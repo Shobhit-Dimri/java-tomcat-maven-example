@@ -41,8 +41,8 @@ pipeline {
                         choice(name: 'pteEnv', choices:'PTE-1\nPTE-2\nPTE-3\nPTE-4', description: 'Select the environment where you want to deploy the build: ')
                     }
                     /*timeout (time: 5, unit:'DAYS'){
-                    input message: 'Approve PTE Deployment?'*/
-                }
+                    input message: 'Approve PTE Deployment?'
+                }*/
                 // build job : 'Deploy_Servlet_Staging_Env'
                 build job : 'Deploy_PTE_env_Pipeline'
 
