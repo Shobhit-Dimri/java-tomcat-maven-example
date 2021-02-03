@@ -41,7 +41,7 @@ pipeline {
         }
         stage('Deploy for PTE environment') {
             when {
-                ${env.BRANCH_NAME}.contains("feature/")
+                branch 'feature/*'
             }
             steps {
                 script {
