@@ -6,7 +6,7 @@ env.BaseEnv_ID = params.BaseEnv_ID
 pipeline {
     agent any
     stages {
-        stage('Cleanup Workspace') {
+        /*stage('Cleanup Workspace') {
             steps {
                 echo "Cleaned Up Workspace For Project"
             }
@@ -25,7 +25,7 @@ pipeline {
             steps {
                 echo "Running Code Analysis"
             }
-        }
+        }*/
         stage ("Build Artifactory") {
             steps {
                 echo "Creating a Build..."
