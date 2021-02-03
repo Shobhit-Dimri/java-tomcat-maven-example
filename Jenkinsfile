@@ -5,13 +5,6 @@ env.BaseEnv_ID = params.BaseEnv_ID
 
 pipeline {
     agent any
-    parameters {
-        choice(
-            name: 'pteEnv',
-            choices: 'PTE-1\nPTE-2\nPTE-3\nPTE-4',
-            description: 'Select the environment where you want to deploy the build: '
-        )
-    }
     stages {
         stage ("Updating code from SCM") {
             steps {
@@ -40,13 +33,28 @@ pipeline {
                 echo "Upload artifactory to JFrog."
             }
         }
-        stage('Select PTE environment') {
+        stage('Select Environment') {
+            when {
+                branch 'develop'
+            }
             steps {
                 script {
-                    env.pteEnv = input message: 'Select PTE env in which you want to deploy the build', ok: 'Deploy!',
-                            parameters: [choice(name: 'DEPLOY BUILD', choices: 'All\nPTE-1\nPTE-2\nPTE-3\nPTE-4', description: "Which PTE environment?")]
+                    env.cteEnv = input message: 'Select CTE env in which you want to deploy the build', ok: 'Deploy!',
+                            parameters: [choice(name: 'DEPLOY BUILD', choices: 'All\nCTE-1\nCTE-2\nCTE-3\nCTE-4', description: "Which CTE environment?")]
                 }
-                echo "PTE environment selected ${env.pteEnv}"
+                echo "Version ID: ${env.Version_ID}"
+                echo "Build ID: ${env.Build_ID}"
+                echo "Client ID: ${env.Client}"
+                echo "BaseEnv ID: ${env.BaseEnv_ID}"
+                echo "CTE environment selected ${env.cteEnv}"
+            }
+            when {
+                branch 'master'
+            }
+            steps {
+                script {
+                    env.masterEnv = input message: 'No environment for master !!!', ok: 'Deploy!'
+                }
             }
         }
     }
