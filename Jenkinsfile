@@ -33,12 +33,19 @@ pipeline {
                 echo "Upload artifactory to JFrog."
             }
         }
-        stage('Select PTE environment') {
+        stage('Select Environment') {
+            when {
+                branch 'feature*'
+            }
             steps {
                 script {
                     env.pteEnv = input message: 'Select PTE env in which you want to deploy the build', ok: 'Deploy!',
                             parameters: [choice(name: 'DEPLOY BUILD', choices: 'All\nPTE-1\nPTE-2\nPTE-3\nPTE-4', description: "Which PTE environment?")]
                 }
+                echo "Version ID: ${env.Version_ID}"
+                echo "Build ID: ${env.Build_ID}"
+                echo "Client ID: ${env.Client}"
+                echo "BaseEnv ID: ${env.BaseEnv_ID}"
                 echo "PTE environment selected ${env.pteEnv}"
             }
         }
