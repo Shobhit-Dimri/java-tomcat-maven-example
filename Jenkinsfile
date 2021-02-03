@@ -41,12 +41,12 @@ pipeline {
         }
         stage('Deploy for PTE environment') {
             when {
-                branch '^feature.*$'
+                ${env.BRANCH_NAME}.contains("feature/")
             }
             steps {
                 script {
-                    env.pteEnv = input message: 'Select CTE env in which you want to deploy the build', ok: 'Deploy!',
-                            parameters: [choice(name: 'DEPLOY BUILD', choices: 'All\nCTE-1\nCTE-2\nCTE-3\nCTE-4', description: "Which CTE environment?")]
+                    env.pteEnv = input message: 'Select PTE env in which you want to deploy the build', ok: 'Deploy!',
+                            parameters: [choice(name: 'DEPLOY BUILD', choices: 'All\nPTE-1\nPTE-2\nPTE-3\nPTE-4', description: "Which PTE environment?")]
                 }
                 echo "PTE environment selected ${env.pteEnv}"
             }
@@ -69,8 +69,8 @@ pipeline {
             }
             steps {
                 script {
-                    env.ppeEnv = input message: 'Select CTE env in which you want to deploy the build', ok: 'Deploy!',
-                            parameters: [choice(name: 'DEPLOY BUILD', choices: 'All\nCTE-1\nCTE-2\nCTE-3\nCTE-4', description: "Which CTE environment?")]
+                    env.ppeEnv = input message: 'Select PPE env in which you want to deploy the build', ok: 'Deploy!',
+                            parameters: [choice(name: 'DEPLOY BUILD', choices: 'All\nPPE-1\nPPE-2\nPPE-3\nPPE-4', description: "Which PPE environment?")]
                 }
                 echo "PPE environment selected ${env.ppeEnv}"
             }
