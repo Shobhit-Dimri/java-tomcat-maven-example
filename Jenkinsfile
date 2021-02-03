@@ -6,24 +6,9 @@ env.BaseEnv_ID = params.BaseEnv_ID
 pipeline {
     agent any
     stages {
-        stage('Cleanup Workspace') {
-            steps {
-                echo "Cleaned Up Workspace For Project"
-            }
-        }
         stage ("Code Checkout") {
             steps {
                 git credentialsId: 'git_credentials', url: "https://github.com/Shobhit-Dimri/java-tomcat-maven-example.git"
-            }
-        }
-        stage(' Unit Testing') {
-            steps {
-                echo "Running Unit Tests"
-            }
-        }
-        stage('Code Analysis') {
-            steps {
-                echo "Running Code Analysis"
             }
         }
         stage ("Build Artifactory") {
