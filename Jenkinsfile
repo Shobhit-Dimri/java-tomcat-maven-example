@@ -1,14 +1,10 @@
-env.Version_ID = params.Version_ID
-env.Build_ID = params.Build_ID
-env.Client = params.Client
-env.BaseEnv_ID = params.BaseEnv_ID
-
 pipeline {
     agent any
     stages {
-        /*stage('Cleanup Workspace') {
+        stage('Cleanup Workspace') {
             steps {
                 echo "Cleaned Up Workspace For Project"
+                echo "Branch Name: ${env.BRANCH_NAME}"
             }
         }
         stage ("Code Checkout") {
@@ -25,7 +21,7 @@ pipeline {
             steps {
                 echo "Running Code Analysis"
             }
-        }*/
+        }
         stage ("Build Artifactory") {
             steps {
                 echo "Creating a Build..."
@@ -54,14 +50,10 @@ pipeline {
             }
             steps {
                 script {
-                    env.cteEnv = input message: 'Select CTE env in which you want to deploy the build', ok: 'Deploy!',
+                    env.pteEnv = input message: 'Select CTE env in which you want to deploy the build', ok: 'Deploy!',
                             parameters: [choice(name: 'DEPLOY BUILD', choices: 'All\nCTE-1\nCTE-2\nCTE-3\nCTE-4', description: "Which CTE environment?")]
                 }
-                echo "Version ID: ${env.Version_ID}"
-                echo "Build ID: ${env.Build_ID}"
-                echo "Client ID: ${env.Client}"
-                echo "BaseEnv ID: ${env.BaseEnv_ID}"
-                echo "CTE environment selected ${env.cteEnv}"
+                echo "PTE environment selected ${env.pteEnv}"
             }
         }
         stage('Deploy for CTE environment') {
@@ -73,10 +65,6 @@ pipeline {
                     env.cteEnv = input message: 'Select CTE env in which you want to deploy the build', ok: 'Deploy!',
                             parameters: [choice(name: 'DEPLOY BUILD', choices: 'All\nCTE-1\nCTE-2\nCTE-3\nCTE-4', description: "Which CTE environment?")]
                 }
-                echo "Version ID: ${env.Version_ID}"
-                echo "Build ID: ${env.Build_ID}"
-                echo "Client ID: ${env.Client}"
-                echo "BaseEnv ID: ${env.BaseEnv_ID}"
                 echo "CTE environment selected ${env.cteEnv}"
             }
         }
@@ -86,14 +74,10 @@ pipeline {
             }
             steps {
                 script {
-                    env.cteEnv = input message: 'Select CTE env in which you want to deploy the build', ok: 'Deploy!',
+                    env.ppeEnv = input message: 'Select CTE env in which you want to deploy the build', ok: 'Deploy!',
                             parameters: [choice(name: 'DEPLOY BUILD', choices: 'All\nCTE-1\nCTE-2\nCTE-3\nCTE-4', description: "Which CTE environment?")]
                 }
-                echo "Version ID: ${env.Version_ID}"
-                echo "Build ID: ${env.Build_ID}"
-                echo "Client ID: ${env.Client}"
-                echo "BaseEnv ID: ${env.BaseEnv_ID}"
-                echo "CTE environment selected ${env.cteEnv}"
+                echo "PPE environment selected ${env.ppeEnv}"
             }
         }
         stage('Deliver master environment') {
