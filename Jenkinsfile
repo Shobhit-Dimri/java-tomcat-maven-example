@@ -39,14 +39,22 @@ pipeline {
             }
             steps {
                 script {
-                    env.pteEnv = input message: 'Select CTE env in which you want to deploy the build', ok: 'Deploy!',
+                    env.cteEnv = input message: 'Select CTE env in which you want to deploy the build', ok: 'Deploy!',
                             parameters: [choice(name: 'DEPLOY BUILD', choices: 'All\nCTE-1\nCTE-2\nCTE-3\nCTE-4', description: "Which CTE environment?")]
                 }
                 echo "Version ID: ${env.Version_ID}"
                 echo "Build ID: ${env.Build_ID}"
                 echo "Client ID: ${env.Client}"
                 echo "BaseEnv ID: ${env.BaseEnv_ID}"
-                echo "PTE environment selected ${env.pteEnv}"
+                echo "CTE environment selected ${env.cteEnv}"
+            }
+            when {
+                branch 'master'
+            }
+            steps {
+                script {
+                    env.masterEnv = input message: 'No environment for master !!!', ok: 'Deploy!'
+                }
             }
         }
     }
