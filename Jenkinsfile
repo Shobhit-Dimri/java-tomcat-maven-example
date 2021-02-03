@@ -6,12 +6,34 @@ env.BaseEnv_ID = params.BaseEnv_ID
 pipeline {
     agent any
     stages {
-        stage ("Updating code from SCM") {
+        stage('Cleanup Workspace') {
+            steps {
+                cleanWs()
+                sh """
+                echo "Cleaned Up Workspace For Project"
+                """
+            }
+        }
+        stage ("Code Checkout") {
             steps {
                 git credentialsId: 'git_credentials', url: "https://github.com/Shobhit-Dimri/java-tomcat-maven-example.git"
             }
         }
-        stage ("Creating Build") {
+        stage(' Unit Testing') {
+            steps {
+                sh """
+                echo "Running Unit Tests"
+                """
+            }
+        }
+        stage('Code Analysis') {
+            steps {
+                sh """
+                echo "Running Code Analysis"
+                """
+            }
+        }
+        stage ("Build Artifactory") {
             steps {
                 echo "Creating a Build..."
                 sh  "mvn -version"
@@ -33,7 +55,23 @@ pipeline {
                 echo "Upload artifactory to JFrog."
             }
         }
-        stage('Select Environment') {
+        stage('Deploy for PTE environment') {
+            when {
+                branch '^feature.*$'
+            }
+            steps {
+                script {
+                    env.cteEnv = input message: 'Select CTE env in which you want to deploy the build', ok: 'Deploy!',
+                            parameters: [choice(name: 'DEPLOY BUILD', choices: 'All\nCTE-1\nCTE-2\nCTE-3\nCTE-4', description: "Which CTE environment?")]
+                }
+                echo "Version ID: ${env.Version_ID}"
+                echo "Build ID: ${env.Build_ID}"
+                echo "Client ID: ${env.Client}"
+                echo "BaseEnv ID: ${env.BaseEnv_ID}"
+                echo "CTE environment selected ${env.cteEnv}"
+            }
+        }
+        stage('Deploy for CTE environment') {
             when {
                 branch 'develop'
             }
@@ -48,6 +86,24 @@ pipeline {
                 echo "BaseEnv ID: ${env.BaseEnv_ID}"
                 echo "CTE environment selected ${env.cteEnv}"
             }
+        }
+        stage('Deploy for PPE environment') {
+            when {
+                branch 'release'
+            }
+            steps {
+                script {
+                    env.cteEnv = input message: 'Select CTE env in which you want to deploy the build', ok: 'Deploy!',
+                            parameters: [choice(name: 'DEPLOY BUILD', choices: 'All\nCTE-1\nCTE-2\nCTE-3\nCTE-4', description: "Which CTE environment?")]
+                }
+                echo "Version ID: ${env.Version_ID}"
+                echo "Build ID: ${env.Build_ID}"
+                echo "Client ID: ${env.Client}"
+                echo "BaseEnv ID: ${env.BaseEnv_ID}"
+                echo "CTE environment selected ${env.cteEnv}"
+            }
+        }
+        stage('Deliver master environment') {
             when {
                 branch 'master'
             }
