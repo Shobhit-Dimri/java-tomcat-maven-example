@@ -7,11 +7,6 @@ pipeline {
                 echo "Branch Name: ${env.BRANCH_NAME}"
             }
         }
-        stage ("Code Checkout") {
-            steps {
-                git credentialsId: 'git_credentials', url: "https://github.com/Shobhit-Dimri/java-tomcat-maven-example.git"
-            }
-        }
         stage(' Unit Testing') {
             steps {
                 echo "Running Unit Tests"
