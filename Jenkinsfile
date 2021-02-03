@@ -35,12 +35,12 @@ pipeline {
         }
         stage('Select Environment') {
             when {
-                branch 'feature*'
+                branch 'develop'
             }
             steps {
                 script {
-                    env.pteEnv = input message: 'Select PTE env in which you want to deploy the build', ok: 'Deploy!',
-                            parameters: [choice(name: 'DEPLOY BUILD', choices: 'All\nPTE-1\nPTE-2\nPTE-3\nPTE-4', description: "Which PTE environment?")]
+                    env.pteEnv = input message: 'Select CTE env in which you want to deploy the build', ok: 'Deploy!',
+                            parameters: [choice(name: 'DEPLOY BUILD', choices: 'All\nCTE-1\nCTE-2\nCTE-3\nCTE-4', description: "Which CTE environment?")]
                 }
                 echo "Version ID: ${env.Version_ID}"
                 echo "Build ID: ${env.Build_ID}"
