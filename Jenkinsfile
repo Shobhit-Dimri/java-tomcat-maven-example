@@ -29,7 +29,7 @@ pipeline {
                     cleanWs()
                 }
             /*    success{
-                    echo "Archiving the build...."
+                    echo "Archiving the build....."
                     archiveArtifacts artifacts : "build/target/*war"
                 }*/
             }
