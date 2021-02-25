@@ -1,3 +1,4 @@
+#!groovy
 pipeline {
     agent any
     stages {
@@ -23,6 +24,12 @@ pipeline {
                 sh  "mvn -version"
                 sh  "mvn clean install -DargLine=”noverify” -DccBaseline=PIP-DEVELOP-${BUILD_NUMBER} -P deliver"
                 echo "BUILD# ${BUILD_NUMBER}"
+                if(env.BRANCH_NAME ==~ /^Feature-\d+$/){
+                    echo "It's FEATURE branch"
+                    //bat "mvn clean install -DargLine=”noverify” -DccBaseline=PIP-BUILD-${shortCommit}-${BUILD_NUMBER} -P deliver"
+                }else{
+                    echo "In else"
+                }
             }
             post{
                 always{
